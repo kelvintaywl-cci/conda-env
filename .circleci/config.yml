@@ -18,6 +18,7 @@ jobs:
             if $(conda env list | grep -q "/usr/local/envs/<< parameters.conda-environment-name >>"); then
               echo "Found existing conda env: /usr/local/envs/<< parameters.conda-environment-name >>, skipping creation then"
             else
+              echo "Create conda env..."
               conda env create -f environment.yml
             fi
 
