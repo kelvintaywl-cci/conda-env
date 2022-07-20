@@ -1,0 +1,38 @@
+version: 2.1
+
+jobs:
+  test:
+    parameters:
+      conda-environment-name:
+        type: string
+    docker:
+      - image: conda/miniconda3
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "environment.yml" }}
+      - run:
+          command: |
+            conda update -y conda
+            conda env create -f environment.yml
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "environment.yml" }}
+          paths:
+            - /usr/local/envs/<< parameters.conda-environment-name >>
+      - run:
+          name: Print conda info
+          command: |
+            conda info --envs
+      - run:
+          name: Running tests
+          command: |
+            conda init bash
+            source ~/.bashrc
+            conda activate << parameters.conda-environment-name >>
+            pytest test/
+workflows:
+  version: 2
+  diagnostic-tool-deploy:
+      jobs:
+        - test:
+            conda-environment-name: diagnostic-tool
