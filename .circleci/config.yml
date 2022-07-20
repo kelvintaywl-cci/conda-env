@@ -24,12 +24,11 @@ jobs:
           command: |
             conda info --envs
       - run:
-          name: Running tests
+          name: Activate conda env
           command: |
             conda init bash
             source ~/.bashrc
             conda activate << parameters.conda-environment-name >>
-            pytest test/
 workflows:
   version: 2
   diagnostic-tool-deploy:
