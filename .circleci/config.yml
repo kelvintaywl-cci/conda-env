@@ -14,7 +14,13 @@ jobs:
       - run:
           command: |
             conda update -y conda
-            conda env create -f environment.yml
+
+            if $(conda env list | grep -q "/usr/local/envs/<< parameters.conda-environment-name >>"); then
+              echo "Found existing conda env: /usr/local/envs/<< parameters.conda-environment-name >>, skipping creation then"
+            else
+              conda env create -f environment.yml
+            fi
+
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "environment.yml" }}
           paths:
